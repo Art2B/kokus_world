@@ -41,7 +41,7 @@ var Main = (function(my, Helpers){
       color: 0xffffff,
       shading: THREE.FlatShading,
       side: THREE.DoubleSide,
-      wireframe: false,
+      wireframe: true,
       transparent: false,
       vertexColors: THREE.FaceColors, // CHANGED
       overdraw: true
@@ -82,19 +82,18 @@ var Main = (function(my, Helpers){
     var pineLeaf = new THREE.Mesh( geometryLeaf, materialLeaf);
     var pineBase = new THREE.Mesh( geometryBase, materialBase);
 
-    pineBase.position.y = -((pineLeaf.geometry.parameters.height/2)+(pineBase.geometry.parameters.height/2));
+    pineLeaf.applyMatrix( new THREE.Matrix4().makeTranslation(0, (leafBaseHeight/2)+((leafBaseHeight*0.15)/2), 0) );
+    pineBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, (leafBaseHeight*0.15)/2, 0) );
 
     my.tree = new THREE.Mesh();
     my.tree.add(pineLeaf).add(pineBase);
-
-    console.log('Tree: ', my.tree);
     my.tree.position.set(position.x, position.y, position.z);
 
     my.scene.add(my.tree);
 
   }
   my.animateTree = function(){
-    my.tree.rotation.y += 0.01;
+    // my.tree.rotation.y += 0.01;
   };
  
   my.init = function(){
@@ -102,7 +101,7 @@ var Main = (function(my, Helpers){
     my.initControls();
     my.initStats();
     my.createPlanet();
-    my.createTree({x: 0, y: 5.25, z:0});
+    my.createTree({x: 0, y: 2, z:0});
     my.camera.position.z = 10;
     my.render();
   };
@@ -110,7 +109,7 @@ var Main = (function(my, Helpers){
   my.render = function(){
     requestAnimationFrame(my.render);
     my.stats.update();
- 
+
     my.renderer.render( my.scene, my.camera );  
   };
   return my;
