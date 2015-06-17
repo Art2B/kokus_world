@@ -68,6 +68,7 @@ var Main = (function(my, Helpers){
     });
     my.scene.add(my.planet);
   };
+  // Rotation for creation must be in degrees :)
   my.createTree = function(rotation, params){
     var baseConfig = Config.tree.pine;
     params = params || {color:{}};
@@ -95,10 +96,9 @@ var Main = (function(my, Helpers){
 
     var pivot = new THREE.Object3D();
     pivot.add(tree);
-    pivot.rotation.set(rotation.x, rotation.y, rotation.z);
+    pivot.rotation.set(Math.radians(rotation.x), Math.radians(rotation.y), Math.radians(rotation.z));
 
     my.scene.add(pivot);
-
   }
   my.createHouse = function(rotation, params){
     var baseConfig = Config.house.cottage;
@@ -132,10 +132,9 @@ var Main = (function(my, Helpers){
 
     var pivot = new THREE.Object3D();
     pivot.add(house);
-    pivot.rotation.set(rotation.x, rotation.y, rotation.z);
+    pivot.rotation.set(Math.radians(rotation.x), Math.radians(rotation.y), Math.radians(rotation.z));
 
     my.scene.add(pivot);
-
   }
   my.animateTree = function(){
   };
@@ -145,8 +144,22 @@ var Main = (function(my, Helpers){
     my.initControls();
     my.initStats();
     my.createPlanet();
-    // my.createTree({x: 0, y: 0, z:0});
-    my.createHouse({x: 0, y: 0, z:0});
+
+    // for(var i=0; i<20; i++){
+    //   var x = Helpers.getRandomInt(0,10); 
+    //   var z = Helpers.getRandomInt(0,10); 
+    //   my.createTree({x: x, y: 0, z:z});
+    // }
+    my.createTree({x: 0, y: 0, z:90});
+
+    // for(var i=0; i<10; i++){
+    //   var x = Helpers.getRandomInt(0,10); 
+    //   var z = Helpers.getRandomInt(0,10); 
+    //   my.createHouse({x: x, y: 0, z:z});
+    // }
+    // my.createHouse({x: 20, y: 0, z:12});
+
+
     my.camera.position.z = 50;
     my.render();
   };
