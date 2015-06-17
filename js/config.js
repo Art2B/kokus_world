@@ -10,12 +10,12 @@ var Config = {
     }
   },
   house: {
-    pine: {
+    cottage: {
       color: {
         roof: 0xAE2F2F,
         base: 0x6B6152,
       },
-      houseBaseSize: 0.5,
+      houseBaseSize: 1.5,
     }
   }
 };

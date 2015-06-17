@@ -100,8 +100,8 @@ var Main = (function(my, Helpers){
     my.scene.add(pivot);
 
   }
-  my.createHouse = function(position, params){
-    var baseConfig = Config.house.pine;
+  my.createHouse = function(rotation, params){
+    var baseConfig = Config.house.cottage;
     params = params || {color:{}};
 
     var roofColor = params.color.roof || baseConfig.color.roof;
@@ -118,20 +118,23 @@ var Main = (function(my, Helpers){
     var geometryBase = new THREE.CylinderGeometry( houseBaseSize, houseBaseSize, houseBaseSize, 4);
     var geometryChimney = new THREE.CylinderGeometry( chimneyBaseSize, chimneyBaseSize, houseBaseSize, 4);
 
-    var pineRoof = new THREE.Mesh( geometryRoof, materialRoof);
-    var pineBase = new THREE.Mesh( geometryBase, materialBase);
-    var pineChimney = new THREE.Mesh( geometryChimney, materialChimney);
+    var cottageRoof = new THREE.Mesh( geometryRoof, materialRoof);
+    var cottageBase = new THREE.Mesh( geometryBase, materialBase);
+    var cottageChimney = new THREE.Mesh( geometryChimney, materialChimney);
 
-    pineBase.position.y = -((pineRoof.geometry.parameters.height/2)+(pineBase.geometry.parameters.height/2));
-    pineChimney.position.x = -((pineRoof.geometry.parameters.height/2)+(pineChimney.geometry.parameters.height/2));
+    cottageBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, houseBaseSize/2, 0) );
+    cottageRoof.applyMatrix( new THREE.Matrix4().makeTranslation(0,houseBaseSize+(roofBaseSize/2), 0) );
+    cottageChimney.applyMatrix( new THREE.Matrix4().makeTranslation((roofBaseSize/2)+(chimneyBaseSize/2),houseBaseSize+(chimneyBaseSize/2), 0) );
 
-    my.house = new THREE.Mesh();
-    my.house.add(pineRoof).add(pineBase).add(pineChimney);
+    var house = new THREE.Mesh();
+    house.add(cottageRoof).add(cottageBase).add(cottageChimney);
+    house.position.y = my.planet.geometry.parameters.radius;
 
-    console.log('House: ', my.house);
-    my.house.position.set(position.x, position.y, position.z);
+    var pivot = new THREE.Object3D();
+    pivot.add(house);
+    pivot.rotation.set(rotation.x, rotation.y, rotation.z);
 
-    my.scene.add(my.house);
+    my.scene.add(pivot);
 
   }
   my.animateTree = function(){
@@ -142,8 +145,8 @@ var Main = (function(my, Helpers){
     my.initControls();
     my.initStats();
     my.createPlanet();
-    my.createTree({x: 0, y: 0, z:0});
-    my.createHouse({x: 0, y: 2.5, z:0});
+    // my.createTree({x: 0, y: 0, z:0});
+    my.createHouse({x: 0, y: 0, z:0});
     my.camera.position.z = 50;
     my.render();
   };
