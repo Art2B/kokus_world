@@ -38,7 +38,15 @@ var Helpers = (function(my){
         return copy;
     }
     throw new Error("Unable to copy obj! Its type isn't supported.");
-  }
+  };
+  my.isEmpty = function(obj){
+    for(var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        return false;
+      }
+    }
+    return true;
+  };
   return my;
 }(Helpers || {}));
 
