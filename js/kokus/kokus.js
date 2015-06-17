@@ -11,20 +11,23 @@ Kokus.prototype = {
   renderer: {},
   camera: {},
   controls: {},
+  light: {},
   stats: {},
   world: {},
+  animations: [],
   init: function(){
     var _self = this;
     _self.initScene();
     _self.initCamera();
     _self.initRenderer();
     _self.initControls();
+    _self.initLight();
     _self.initStats();
 
     _self.camera.position.z = 50;
 
     _self.render();
-    _self.world = new Kokus.World({wireframe: true},_self);
+    _self.world = new Kokus.World({},_self);
 
 
   },
@@ -52,6 +55,15 @@ Kokus.prototype = {
     _self.controls.damping = 0.2;
     _self.controls.addEventListener( 'change', _self.render );
   },
+  initLight: function(){
+    var _self = this;
+    var light = new THREE.PointLight("#ffffff", 0.5);
+    light.position.set(100, 100, 0);
+    _self.scene.add(light);
+
+    var ambientLight = new THREE.AmbientLight("#dbdbdb");
+    _self.scene.add(ambientLight);
+  },
   initStats: function(){
     var _self = this;
     _self.stats = new Stats();
@@ -63,10 +75,16 @@ Kokus.prototype = {
   render: function(){
     var _self = this;
     requestAnimationFrame(_self.render.bind(_self));
+    _self.animations.forEach(function (element, index) {
+      typeof element.function === 'function' && element.function.bind(element.scope)();
+    });
     _self.stats.update();
     _self.renderer.render( _self.scene, _self.camera );   
   },
-  get: function(){
-    console.log(this);
+  reset: function(){
+    var _self = this;
+    document.body.removeChild(document.getElementById("stats"));
+    document.body.removeChild(document.getElementsByTagName("canvas")[0]);
+    _self.init();
   }
 };

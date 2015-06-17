@@ -29,15 +29,23 @@ Kokus.World.prototype = {
   generate: function(){
     var _self = this;
 
-    var material = new THREE.MeshBasicMaterial({
+    var material = new THREE.MeshLambertMaterial({
       color: 0xffffff,
-      wireframe: _self.options.wireframe,
+      wireframe: false,
+      transparent: false,
+      vertexColors: THREE.FaceColors, // CHANGED
+      overdraw: true
     });
     var geometry = new THREE.SphereGeometry(_self.options.radius, _self.options.segments, _self.options.segments);
     _self.planet = new THREE.Mesh(geometry, material);
 
     _self.changeFaces();
     _self.kokusObject.scene.add(_self.planet);
+    // Add animate function to rendering. To animate the world.
+    // _self.kokusObject.animations.push({
+    //   function: _self.animate,
+    //   scope: _self
+    // });
   },
   changeFaces: function(){
     var _self = this;
@@ -52,5 +60,9 @@ Kokus.World.prototype = {
       
       val.color.setRGB(red, green, blue);
     });
+  },
+  animate: function(){
+    var _self = this;
+    _self.planet.rotation.y += 0.01;
   }
 };
