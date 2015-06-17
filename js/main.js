@@ -8,6 +8,8 @@ var Main = (function(my, Helpers){
  
   // Elements
   my.planet = {};
+  my.tree = {};
+  my.house = {};
 
   // Development purpose
   my.bool = false;
@@ -98,6 +100,40 @@ var Main = (function(my, Helpers){
     my.scene.add(pivot);
 
   }
+  my.createHouse = function(position, params){
+    var baseConfig = Config.house.pine;
+    params = params || {color:{}};
+
+    var roofColor = params.color.roof || baseConfig.color.roof;
+    var baseColor = params.color.base || baseConfig.color.base;
+    var houseBaseSize = params.houseBaseSize || baseConfig.houseBaseSize;
+    var chimneyBaseSize = houseBaseSize/4;
+    var roofBaseSize = houseBaseSize/2;
+
+    var materialRoof = new THREE.LineBasicMaterial({color: roofColor});
+    var materialBase = new THREE.LineBasicMaterial({color: baseColor});
+    var materialChimney = new THREE.LineBasicMaterial({color: baseColor});
+    
+    var geometryRoof = new THREE.CylinderGeometry( roofBaseSize, houseBaseSize, roofBaseSize, 4);
+    var geometryBase = new THREE.CylinderGeometry( houseBaseSize, houseBaseSize, houseBaseSize, 4);
+    var geometryChimney = new THREE.CylinderGeometry( chimneyBaseSize, chimneyBaseSize, houseBaseSize, 4);
+
+    var pineRoof = new THREE.Mesh( geometryRoof, materialRoof);
+    var pineBase = new THREE.Mesh( geometryBase, materialBase);
+    var pineChimney = new THREE.Mesh( geometryChimney, materialChimney);
+
+    pineBase.position.y = -((pineRoof.geometry.parameters.height/2)+(pineBase.geometry.parameters.height/2));
+    pineChimney.position.x = -((pineRoof.geometry.parameters.height/2)+(pineChimney.geometry.parameters.height/2));
+
+    my.house = new THREE.Mesh();
+    my.house.add(pineRoof).add(pineBase).add(pineChimney);
+
+    console.log('House: ', my.house);
+    my.house.position.set(position.x, position.y, position.z);
+
+    my.scene.add(my.house);
+
+  }
   my.animateTree = function(){
   };
  
@@ -107,6 +143,7 @@ var Main = (function(my, Helpers){
     my.initStats();
     my.createPlanet();
     my.createTree({x: 0, y: 0, z:0});
+    my.createHouse({x: 0, y: 2.5, z:0});
     my.camera.position.z = 50;
     my.render();
   };
