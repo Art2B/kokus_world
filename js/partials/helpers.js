@@ -39,8 +39,10 @@ var Helpers = (function(my){
     }
     throw new Error("Unable to copy obj! Its type isn't supported.");
   }
-
-
-
   return my;
 }(Helpers || {}));
+
+
+Math.radians = function(degrees) {
+  return degrees * Math.PI / 180;
+};

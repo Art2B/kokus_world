@@ -10,7 +10,6 @@ var Main = (function(my, Helpers){
   my.planet = {};
   my.tree = {};
   my.house = {};
-  my.mountain = {};
 
   // Development purpose
   my.bool = false;
@@ -28,11 +27,22 @@ var Main = (function(my, Helpers){
     my.renderer.shadowMapEnabled = true;
     document.body.appendChild( my.renderer.domElement );
   };
+    
+  my.initLight = function () {
+    var light = new THREE.PointLight("#ffffff", 0.5);
+  light.position.set(100, 100, 0);
+  my.scene.add(light);
+      
+    var ambientLight = new THREE.AmbientLight("#dbdbdb");
+  my.scene.add(ambientLight);
+  };
+    
   my.initControls = function(){
     my.controls = new THREE.OrbitControls( my.camera );
     my.controls.damping = 0.2;
     my.controls.addEventListener( 'change', my.render );
   };
+    
   my.initStats = function(){
     my.stats = new Stats();
     my.stats.domElement.style.position = 'absolute';
@@ -42,11 +52,11 @@ var Main = (function(my, Helpers){
   };
 
   my.createPlanet = function(){
-    var material = new THREE.MeshBasicMaterial({
+    var material = new THREE.MeshLambertMaterial({
       color: 0xffffff,
       shading: THREE.FlatShading,
       side: THREE.DoubleSide,
-      wireframe: true,
+//      wireframe: true,
       transparent: false,
       vertexColors: THREE.FaceColors, // CHANGED
       overdraw: true
@@ -54,7 +64,7 @@ var Main = (function(my, Helpers){
     var geometry = new THREE.SphereGeometry(20, 13, 13);
     my.planet = new THREE.Mesh(geometry, material);
 
-    console.log('Planet: ',my.planet);
+    console.log('Planet: ', my.planet);
 
     my.planet.geometry.faces.forEach(function(val, index){
       var red = Helpers.randomVariation(39, 10);
@@ -69,6 +79,7 @@ var Main = (function(my, Helpers){
     });
     my.scene.add(my.planet);
   };
+  // Rotation for creation must be in degrees :)
   my.createTree = function(rotation, params){
     var baseConfig = Config.tree.pine;
     params = params || {color:{}};
@@ -90,17 +101,18 @@ var Main = (function(my, Helpers){
     pineLeaf.applyMatrix( new THREE.Matrix4().makeTranslation(0, (leafBaseHeight/2)+((leafBaseHeight*0.15)/2), 0) );
     pineBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, (leafBaseHeight*0.15)/2, 0) );
 
-    var tree = new THREE.Mesh();
-    tree.add(pineLeaf).add(pineBase);
-    tree.position.y = my.planet.geometry.parameters.radius;
+    my.tree = new THREE.Mesh();
+    my.tree.add(pineLeaf).add(pineBase);
+    my.tree.position.y = my.planet.geometry.parameters.radius;
 
     var pivot = new THREE.Object3D();
-    pivot.add(tree);
+
+    pivot.add(my.tree);
     pivot.rotation.set(rotation.x, rotation.y, rotation.z);
 
     my.scene.add(pivot);
-
-  }
+  };
+    
   my.createHouse = function(position, params){
     var baseConfig = Config.house.pine;
     params = params || {color:{}};
@@ -119,22 +131,25 @@ var Main = (function(my, Helpers){
     var geometryBase = new THREE.CylinderGeometry( houseBaseSize, houseBaseSize, houseBaseSize, 4);
     var geometryChimney = new THREE.CylinderGeometry( chimneyBaseSize, chimneyBaseSize, houseBaseSize, 4);
 
-    var pineRoof = new THREE.Mesh( geometryRoof, materialRoof);
-    var pineBase = new THREE.Mesh( geometryBase, materialBase);
-    var pineChimney = new THREE.Mesh( geometryChimney, materialChimney);
+    var cottageRoof = new THREE.Mesh( geometryRoof, materialRoof);
+    var cottageBase = new THREE.Mesh( geometryBase, materialBase);
+    var cottageChimney = new THREE.Mesh( geometryChimney, materialChimney);
 
-    pineBase.position.y = -((pineRoof.geometry.parameters.height/2)+(pineBase.geometry.parameters.height/2));
-    pineChimney.position.x = -((pineRoof.geometry.parameters.height/2)+(pineChimney.geometry.parameters.height/2));
+    cottageBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, houseBaseSize/2, 0) );
+    cottageRoof.applyMatrix( new THREE.Matrix4().makeTranslation(0,houseBaseSize+(roofBaseSize/2), 0) );
+    cottageChimney.applyMatrix( new THREE.Matrix4().makeTranslation((roofBaseSize/2)+(chimneyBaseSize/2),houseBaseSize+(chimneyBaseSize/2), 0) );
 
-    my.house = new THREE.Mesh();
-    my.house.add(pineRoof).add(pineBase).add(pineChimney);
+    var house = new THREE.Mesh();
+    house.add(cottageRoof).add(cottageBase).add(cottageChimney);
+    house.position.y = my.planet.geometry.parameters.radius;
 
-    console.log('House: ', my.house);
-    my.house.position.set(position.x, position.y, position.z);
+    var pivot = new THREE.Object3D();
+    pivot.add(house);
+    pivot.rotation.set(Math.radians(rotation.x), Math.radians(rotation.y), Math.radians(rotation.z));
 
-    my.scene.add(my.house);
+    my.scene.add(pivot);
+  };
 
-  },
   my.createMountain = function(rotation, params){
     var baseConfig = Config.mountain.snow;
     params = params || {color:{}};
@@ -165,18 +180,34 @@ var Main = (function(my, Helpers){
 
     my.scene.add(pivot);
 
-  }
+  };
+  
   my.animateTree = function(){
   };
  
   my.init = function(){
     my.initScene();
+    my.initLight();
     my.initControls();
     my.initStats();
     my.createPlanet();
-    //my.createTree({x: 0, y: 0, z:0});
-    //my.createHouse({x: 0, y: 2.5, z:0});
     my.createMountain({x: 0, y: 0, z:0});
+
+    // for(var i=0; i<20; i++){
+    //   var x = Helpers.getRandomInt(0,10); 
+    //   var z = Helpers.getRandomInt(0,10); 
+    //   my.createTree({x: x, y: 0, z:z});
+    // }
+    my.createTree({x: 0, y: 0, z:90});
+
+    // for(var i=0; i<10; i++){
+    //   var x = Helpers.getRandomInt(0,10); 
+    //   var z = Helpers.getRandomInt(0,10); 
+    //   my.createHouse({x: x, y: 0, z:z});
+    // }
+    // my.createHouse({x: 20, y: 0, z:12});
+
+
     my.camera.position.z = 50;
     my.render();
   };
