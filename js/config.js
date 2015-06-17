@@ -28,5 +28,14 @@ var Config = {
       },
       houseBaseSize: 1.5,
     }
+  },
+  mountain: {
+    snow: {
+      color: {
+        snow: 0xFFFFFF,
+        base: 0x564334
+      },
+      mountainBaseSize: 3,
+    }
   }
 };
