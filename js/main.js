@@ -8,8 +8,10 @@ var Main = (function(my, Helpers){
  
   // Elements
   my.planet = {};
-  my.tree = {};
- 
+
+  // Development purpose
+  my.bool = false;
+
   my.initScene = function(){
     my.scene = new THREE.Scene();
     my.scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
@@ -46,7 +48,7 @@ var Main = (function(my, Helpers){
       vertexColors: THREE.FaceColors, // CHANGED
       overdraw: true
     });
-    var geometry = new THREE.SphereGeometry(2, 13, 13);
+    var geometry = new THREE.SphereGeometry(20, 13, 13);
     my.planet = new THREE.Mesh(geometry, material);
 
     console.log('Planet: ',my.planet);
@@ -64,7 +66,7 @@ var Main = (function(my, Helpers){
     });
     my.scene.add(my.planet);
   };
-  my.createTree = function(position, params){
+  my.createTree = function(rotation, params){
     var baseConfig = Config.tree.pine;
     params = params || {color:{}};
 
@@ -85,15 +87,18 @@ var Main = (function(my, Helpers){
     pineLeaf.applyMatrix( new THREE.Matrix4().makeTranslation(0, (leafBaseHeight/2)+((leafBaseHeight*0.15)/2), 0) );
     pineBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, (leafBaseHeight*0.15)/2, 0) );
 
-    my.tree = new THREE.Mesh();
-    my.tree.add(pineLeaf).add(pineBase);
-    my.tree.position.set(position.x, position.y, position.z);
+    var tree = new THREE.Mesh();
+    tree.add(pineLeaf).add(pineBase);
+    tree.position.y = my.planet.geometry.parameters.radius;
 
-    my.scene.add(my.tree);
+    var pivot = new THREE.Object3D();
+    pivot.add(tree);
+    pivot.rotation.set(rotation.x, rotation.y, rotation.z);
+
+    my.scene.add(pivot);
 
   }
   my.animateTree = function(){
-    // my.tree.rotation.y += 0.01;
   };
  
   my.init = function(){
@@ -101,14 +106,16 @@ var Main = (function(my, Helpers){
     my.initControls();
     my.initStats();
     my.createPlanet();
-    my.createTree({x: 0, y: 2, z:0});
-    my.camera.position.z = 10;
+    my.createTree({x: 0, y: 0, z:0});
+    my.camera.position.z = 50;
     my.render();
   };
  
   my.render = function(){
     requestAnimationFrame(my.render);
     my.stats.update();
+
+    // my.animateTree();
 
     my.renderer.render( my.scene, my.camera );  
   };
