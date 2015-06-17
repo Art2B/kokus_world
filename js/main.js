@@ -10,6 +10,7 @@ var Main = (function(my, Helpers){
   my.planet = {};
   my.tree = {};
   my.house = {};
+  my.mountain = {};
 
   // Development purpose
   my.bool = false;
@@ -100,8 +101,8 @@ var Main = (function(my, Helpers){
     my.scene.add(pivot);
 
   }
-  my.createHouse = function(rotation, params){
-    var baseConfig = Config.house.cottage;
+  my.createHouse = function(position, params){
+    var baseConfig = Config.house.pine;
     params = params || {color:{}};
 
     var roofColor = params.color.roof || baseConfig.color.roof;
@@ -118,20 +119,48 @@ var Main = (function(my, Helpers){
     var geometryBase = new THREE.CylinderGeometry( houseBaseSize, houseBaseSize, houseBaseSize, 4);
     var geometryChimney = new THREE.CylinderGeometry( chimneyBaseSize, chimneyBaseSize, houseBaseSize, 4);
 
-    var cottageRoof = new THREE.Mesh( geometryRoof, materialRoof);
-    var cottageBase = new THREE.Mesh( geometryBase, materialBase);
-    var cottageChimney = new THREE.Mesh( geometryChimney, materialChimney);
+    var pineRoof = new THREE.Mesh( geometryRoof, materialRoof);
+    var pineBase = new THREE.Mesh( geometryBase, materialBase);
+    var pineChimney = new THREE.Mesh( geometryChimney, materialChimney);
 
-    cottageBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, houseBaseSize/2, 0) );
-    cottageRoof.applyMatrix( new THREE.Matrix4().makeTranslation(0,houseBaseSize+(roofBaseSize/2), 0) );
-    cottageChimney.applyMatrix( new THREE.Matrix4().makeTranslation((roofBaseSize/2)+(chimneyBaseSize/2),houseBaseSize+(chimneyBaseSize/2), 0) );
+    pineBase.position.y = -((pineRoof.geometry.parameters.height/2)+(pineBase.geometry.parameters.height/2));
+    pineChimney.position.x = -((pineRoof.geometry.parameters.height/2)+(pineChimney.geometry.parameters.height/2));
 
-    var house = new THREE.Mesh();
-    house.add(cottageRoof).add(cottageBase).add(cottageChimney);
-    house.position.y = my.planet.geometry.parameters.radius;
+    my.house = new THREE.Mesh();
+    my.house.add(pineRoof).add(pineBase).add(pineChimney);
+
+    console.log('House: ', my.house);
+    my.house.position.set(position.x, position.y, position.z);
+
+    my.scene.add(my.house);
+
+  },
+  my.createMountain = function(rotation, params){
+    var baseConfig = Config.mountain.snow;
+    params = params || {color:{}};
+
+    var snowColor = params.color.snow || baseConfig.color.snow;
+    var baseColor = params.color.base || baseConfig.color.base;
+    var mountainBaseSize = params.mountainBaseSize || baseConfig.mountainBaseSize;
+
+    var materialTop = new THREE.LineBasicMaterial({color: snowColor});
+    var materialBase = new THREE.LineBasicMaterial({color: baseColor});
+    
+    var geometryTop = new THREE.CylinderGeometry( 0, mountainBaseSize/3, mountainBaseSize/3, 4);
+    var geometryBase = new THREE.CylinderGeometry( 0, mountainBaseSize, mountainBaseSize, 4);
+
+    var snowTop = new THREE.Mesh( geometryTop, materialTop);
+    var snowBase = new THREE.Mesh( geometryBase, materialBase);
+
+    snowTop.applyMatrix( new THREE.Matrix4().makeTranslation(0, (mountainBaseSize/2), 0) );
+    snowBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, (mountainBaseSize*0.3)/2, 0) );
+
+    var mountain = new THREE.Mesh();
+    mountain.add(snowTop).add(snowBase);
+    mountain.position.y = my.planet.geometry.parameters.radius;
 
     var pivot = new THREE.Object3D();
-    pivot.add(house);
+    pivot.add(mountain);
     pivot.rotation.set(rotation.x, rotation.y, rotation.z);
 
     my.scene.add(pivot);
@@ -145,8 +174,9 @@ var Main = (function(my, Helpers){
     my.initControls();
     my.initStats();
     my.createPlanet();
-    // my.createTree({x: 0, y: 0, z:0});
-    my.createHouse({x: 0, y: 0, z:0});
+    //my.createTree({x: 0, y: 0, z:0});
+    //my.createHouse({x: 0, y: 2.5, z:0});
+    my.createMountain({x: 0, y: 0, z:0});
     my.camera.position.z = 50;
     my.render();
   };
