@@ -20,16 +20,11 @@ Kokus.prototype = {
     _self.initScene();
     _self.initCamera();
     _self.initRenderer();
-    _self.initControls();
-    _self.initLight();
+    // _self.initControls();
     _self.initStats();
 
-    _self.camera.position.z = 50;
-
     _self.render();
-    _self.world = new Kokus.World({},_self);
-
-
+   _self.initWorld();
   },
   initScene: function(){
     var _self = this;
@@ -72,6 +67,12 @@ Kokus.prototype = {
     _self.stats.domElement.style.zIndex = 100;
     document.body.appendChild( _self.stats.domElement );
   },
+  initWorld: function(){
+    var _self = this;
+    _self.initLight();
+    _self.camera.position.z = 50;
+    _self.world = new Kokus.World({},_self);
+  },
   render: function(){
     var _self = this;
     requestAnimationFrame(_self.render.bind(_self));
@@ -83,8 +84,9 @@ Kokus.prototype = {
   },
   reset: function(){
     var _self = this;
-    document.body.removeChild(document.getElementById("stats"));
-    document.body.removeChild(document.getElementsByTagName("canvas")[0]);
-    _self.init();
+    _.each(_.rest(_self.scene.children, 1), function( object ) {
+      _self.scene.remove(object);
+    });
+    _self.initWorld();
   }
 };
