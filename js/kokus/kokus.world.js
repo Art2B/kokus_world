@@ -41,11 +41,10 @@ Kokus.World.prototype = {
 
     _self.changeFaces();
     _self.kokusObject.scene.add(_self.planet);
-    // Add animate function to rendering. To animate the world.
-    // _self.kokusObject.animations.push({
-    //   function: _self.animate,
-    //   scope: _self
-    // });
+    _self.kokusObject.animations.push({
+      function: _self.animate,
+      scope: _self
+    });
   },
   changeFaces: function(){
     var _self = this;
