@@ -80,7 +80,14 @@ Kokus.prototype = {
       typeof element.function === 'function' && element.function.bind(element.scope)();
     });
     _self.stats.update();
+
+    _self.animate();
+
     _self.renderer.render( _self.scene, _self.camera );   
+  },
+  animate: function(){
+    var _self = this;
+    _self.scene.rotation.y += 0.01;
   },
   reset: function(){
     var _self = this;
