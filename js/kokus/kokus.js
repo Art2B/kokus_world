@@ -91,7 +91,7 @@ Kokus.prototype = {
   },
   reset: function(){
     var _self = this;
-    _.each(_.rest(_self.scene.children, 1), function( object ) {
+    _.each(_.rest(_self.scene.children, 0), function( object ) {
       _self.scene.remove(object);
     });
     _self.initWorld();
