@@ -15,6 +15,7 @@ Kokus.prototype = {
   stats: {},
   world: {},
   animations: [],
+  isCameraMoving: false,
   init: function(){
     var _self = this;
     _self.initScene();
@@ -71,6 +72,8 @@ Kokus.prototype = {
     var _self = this;
     _self.initLight();
     _self.camera.position.z = 50;
+    _self.camera.previousPosition = _self.camera.position.z;
+    _self.camera.stepValue = _self.camera.position.z*0.4;
     _self.world = new Kokus.World({},_self);
   },
   render: function(){
@@ -88,6 +91,26 @@ Kokus.prototype = {
   animate: function(){
     var _self = this;
     _self.scene.rotation.y += 0.01;
+
+
+    if(_self.isCameraMoving){
+      _self.camera.position.z += 1;
+      if(_self.camera.position.z >= _self.camera.previousPosition + _self.camera.stepValue){
+        _self.isCameraMoving = false;
+      }
+    }
+
+  },
+  dailyEvents: function(){
+    var _self = this;
+    _self.world.grow();
+
+
+    if(_self.world.scaleStep <= _self.world.planet.scale.x-_self.world.previousCameraMovePlanetScale){
+      _self.world.previousCameraMovePlanetScale = _self.world.planet.scale.x;
+      _self.camera.previousPosition = _self.camera.position.z;
+      _self.isCameraMoving = true;
+    }
   },
   reset: function(){
     var _self = this;
