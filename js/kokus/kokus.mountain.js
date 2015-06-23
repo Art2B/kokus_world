@@ -19,9 +19,6 @@ Kokus.Mountain = function(rotation, options, kokusObject){
   this.options.mountainBaseSize = options.mountainBaseSize || defaultOption.mountainBaseSize;
 
   this.kokusObject = kokusObject;
-
-  this.create();
-  return this;
 };
 Kokus.Mountain.prototype = {
   kokusObject: {},
@@ -53,6 +50,7 @@ Kokus.Mountain.prototype = {
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
+    return _self;
   },
   animate: function(){
     console.log('animate function');

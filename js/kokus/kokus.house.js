@@ -20,10 +20,7 @@ Kokus.House = function(rotation, options, kokusObject){
 
   this.options.elements = options.elements || [];
 
-  this.kokusObject = kokusObject;
-
-  this.create();
-  return this;
+  this.kokusObject = kokusObject;  
 };
 Kokus.House.prototype = {
   kokusObject: {},
@@ -60,7 +57,9 @@ Kokus.House.prototype = {
     _self.pivot.add(_self.house);
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
-  _self.kokusObject.scene.add(_self.pivot);
+    _self.kokusObject.scene.add(_self.pivot);
+
+    return _self;
   },
   collision: function(){
     var _self = this;

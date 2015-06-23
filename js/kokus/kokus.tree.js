@@ -20,9 +20,6 @@ Kokus.Tree = function(rotation, options, kokusObject){
   this.options.leafBaseHeight = options.leafBaseHeight || defaultOption.leafBaseHeight;
 
   this.kokusObject = kokusObject;
-
-  this.create();
-  return this;
 };
 Kokus.Tree.prototype = {
   kokusObject: {},
@@ -50,6 +47,7 @@ Kokus.Tree.prototype = {
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
+    return _self;
   },
   animate: function(){
     console.log('animate function');
