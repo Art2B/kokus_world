@@ -92,7 +92,6 @@ Kokus.prototype = {
     var _self = this;
     _self.scene.rotation.y += 0.01;
 
-
     if(_self.isCameraMoving){
       _self.camera.position.z += 1;
       if(_self.camera.position.z >= _self.camera.previousPosition + _self.camera.stepValue){
@@ -111,6 +110,20 @@ Kokus.prototype = {
       _self.camera.previousPosition = _self.camera.position.z;
       _self.isCameraMoving = true;
     }
+    if (_self.scene.position.y >5){
+      _self.scene.pos = false;
+    }
+    if (_self.scene.position.y < 0 || _self.scene.position.y < -5){
+      _self.scene.pos = true;
+    }
+    if (_self.scene.pos == true){
+      _self.scene.position.y += 0.03;
+      _self.scene.position.x += 0.01;
+    } else{
+      _self.scene.position.y -= 0.03;
+      _self.scene.position.x -= 0.01;
+    }
+
   },
   reset: function(){
     var _self = this;
