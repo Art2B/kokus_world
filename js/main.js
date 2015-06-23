@@ -1,3 +1,4 @@
+/*
 var Main = (function(my, Helpers){
   my.instance = {};
   my.init = function(){
@@ -6,6 +7,12 @@ var Main = (function(my, Helpers){
   }
   return my;
 }(Main || {}, Helpers || {}));
+*/
  
  
-Main.init();
+var kok = new Kokus();
+var array = [new Kokus.Mountain(null, null, kok)];
+var rotation = {};
+rotation.x = 12;
+var mountain = new Kokus.Mountain(rotation, {elements: array}, kok);
+console.log(mountain.collision());
