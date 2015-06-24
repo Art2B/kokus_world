@@ -20,6 +20,10 @@ Kokus.Tree = function(rotation, options, kokusObject){
   this.options.leafBaseHeight = options.leafBaseHeight || defaultOption.leafBaseHeight;
 
   this.kokusObject = kokusObject;
+
+
+  // need to check collision
+  this.create();
 };
 Kokus.Tree.prototype = {
   kokusObject: {},
@@ -41,16 +45,30 @@ Kokus.Tree.prototype = {
     _self.tree = new THREE.Mesh();
     _self.tree.add(pineLeaf).add(pineBase);
     _self.tree.position.y = _self.kokusObject.world.planet.geometry.parameters.radius;
+    _self.tree.position.baseY = _self.tree.position.y;
 
     _self.pivot = new THREE.Object3D();
     _self.pivot.add(_self.tree);
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
+    _self.kokusObject.animations.push({
+      function: _self.animate,
+      scope: _self
+    });
+
     return _self;
   },
   animate: function(){
-    console.log('animate function');
+    var _self = this;
+
+    if(_self.tree.position.y < _self.tree.position.yNeeded){
+      if(_self.tree.position.yNeeded - _self.tree.position.y > 0.1){
+        _self.tree.position.y += 0.1;
+      } else {
+        _self.tree.position.y += _self.tree.position.yNeeded - _self.tree.position.y;
+      }
+    }
   },
   collision: function(){
     var _self = this;

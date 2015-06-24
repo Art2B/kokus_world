@@ -110,6 +110,8 @@ Kokus.prototype = {
       _self.camera.previousPosition = _self.camera.position.z;
       _self.isCameraMoving = true;
     }
+
+    // WTF ?
     if (_self.scene.position.y >5){
       _self.scene.pos = false;
     }

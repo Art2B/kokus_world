@@ -21,6 +21,9 @@ Kokus.House = function(rotation, options, kokusObject){
   this.options.elements = options.elements || [];
 
   this.kokusObject = kokusObject;  
+
+  // Need to check collision
+  this.create();
 };
 Kokus.House.prototype = {
   kokusObject: {},
@@ -52,12 +55,17 @@ Kokus.House.prototype = {
     _self.house = new THREE.Mesh();
     _self.house.add(cottageRoof).add(cottageBase).add(cottageChimney);
     _self.house.position.y = _self.kokusObject.world.planet.geometry.parameters.radius;
+    _self.house.position.baseY = _self.house.position.y;
 
     _self.pivot = new THREE.Object3D();
     _self.pivot.add(_self.house);
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
+    _self.kokusObject.animations.push({
+      function: _self.animate,
+      scope: _self
+    });
 
     return _self;
   },
@@ -117,6 +125,14 @@ Kokus.House.prototype = {
     return false;
   },
   animate: function(){
-    console.log('animate function');
+    var _self = this;
+
+    if(_self.house.position.y < _self.house.position.yNeeded){
+      if(_self.house.position.yNeeded - _self.house.position.y > 0.1){
+        _self.house.position.y += 0.1;
+      } else {
+        _self.house.position.y += _self.house.position.yNeeded - _self.house.position.y;
+      }
+    }
   }
 };

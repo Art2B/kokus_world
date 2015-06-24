@@ -72,6 +72,13 @@ Kokus.World.prototype = {
 
     _self.scaleWanted = _self.planet.scale.x + 0.05;
     _self.isGrowing = true;
+
+    _self.kokusObject.scene.children.forEach(function(val, index){
+      if(val.type == "Object3D"){
+        val.children[0].position.yNeeded = val.children[0].position.baseY * _self.scaleWanted;
+      }
+    });
+
   },
   animate: function(){
     var _self = this;

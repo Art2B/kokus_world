@@ -19,6 +19,9 @@ Kokus.Mountain = function(rotation, options, kokusObject){
   this.options.mountainBaseSize = options.mountainBaseSize || defaultOption.mountainBaseSize;
 
   this.kokusObject = kokusObject;
+
+  // Need to check collision
+  this.create();
 };
 Kokus.Mountain.prototype = {
   kokusObject: {},
@@ -44,16 +47,30 @@ Kokus.Mountain.prototype = {
     _self.mountain = new THREE.Mesh();
     _self.mountain.add(snowTop).add(snowBase);
     _self.mountain.position.y = _self.kokusObject.world.planet.geometry.parameters.radius;
+    _self.mountain.position.baseY = _self.mountain.position.y;
 
     _self.pivot = new THREE.Object3D();
     _self.pivot.add(_self.mountain);
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
+    _self.kokusObject.animations.push({
+      function: _self.animate,
+      scope: _self
+    });
+
     return _self;
   },
   animate: function(){
-    console.log('animate function');
+    var _self = this;
+
+    if(_self.mountain.position.y < _self.mountain.position.yNeeded){
+      if(_self.mountain.position.yNeeded - _self.mountain.position.y > 0.1){
+        _self.mountain.position.y += 0.1;
+      } else {
+        _self.mountain.position.y += _self.mountain.position.yNeeded - _self.mountain.position.y;
+      }
+    }
   },
   collision: function(){
     var _self = this;
