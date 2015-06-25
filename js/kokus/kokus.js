@@ -75,6 +75,33 @@ Kokus.prototype = {
     _self.camera.previousPosition = _self.camera.position.z;
     _self.camera.stepValue = _self.camera.position.z*0.4;
     _self.world = new Kokus.World({},_self);
+      
+    if(localStorage.getItem("worldElements") == null) {
+        localStorage.setItem("worldElements", JSON.stringify([]));
+    }
+  },
+  initSavedWorld: function(){
+    var _self = this;
+    var savedElements = JSON.parse(localStorage.getItem("worldElements"));
+      
+      
+    savedElements.forEach(function(elem){
+        switch(elem.type) {
+            case "tree":
+                new Kokus.Tree(elem.options.rotation, elem.options, _self, false);
+                break;
+            case "mountain":
+                setTimeout(function(){
+                    new Kokus.Mountain(elem.options.rotation, elem.options, _self, false);
+                }, 400);
+                break;
+            case "house":
+                setTimeout(function(){
+                    new Kokus.House(elem.options.rotation, elem.options, _self, false);
+                }, 800);
+                break;
+        }
+    });      
   },
   render: function(){
     var _self = this;
@@ -98,20 +125,7 @@ Kokus.prototype = {
         _self.isCameraMoving = false;
       }
     }
-
-  },
-  dailyEvents: function(){
-    var _self = this;
-    _self.world.grow();
-
-
-    if(_self.world.scaleStep <= _self.world.planet.scale.x-_self.world.previousCameraMovePlanetScale){
-      _self.world.previousCameraMovePlanetScale = _self.world.planet.scale.x;
-      _self.camera.previousPosition = _self.camera.position.z;
-      _self.isCameraMoving = true;
-    }
-
-    // WTF ?
+      
     if (_self.scene.position.y >5){
       _self.scene.pos = false;
     }
@@ -127,11 +141,23 @@ Kokus.prototype = {
     }
 
   },
+  dailyEvents: function(){
+    var _self = this;
+    _self.world.grow();
+
+
+    if(_self.world.scaleStep <= _self.world.planet.scale.x-_self.world.previousCameraMovePlanetScale){
+      _self.world.previousCameraMovePlanetScale = _self.world.planet.scale.x;
+      _self.camera.previousPosition = _self.camera.position.z;
+      _self.isCameraMoving = true;
+    }
+  },
   reset: function(){
     var _self = this;
     _.each(_.rest(_self.scene.children, 0), function( object ) {
       _self.scene.remove(object);
     });
+    localStorage.setItem("worldElements", JSON.stringify([]));      
     _self.initWorld();
   }
 };

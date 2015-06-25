@@ -1,4 +1,4 @@
-Kokus.Mountain = function(rotation, options, kokusObject){
+Kokus.Mountain = function(rotation, options, kokusObject, save){
   this.options = {};
 
   rotation = rotation || {};
@@ -18,6 +18,8 @@ Kokus.Mountain = function(rotation, options, kokusObject){
   this.options.color.base = options.color.base || defaultOption.color.base;
   this.options.mountainBaseSize = options.mountainBaseSize || defaultOption.mountainBaseSize;
 
+  this.options.save = (save !== undefined) ? save : true;
+    
   this.kokusObject = kokusObject;
 
   // Need to check collision
@@ -61,6 +63,16 @@ Kokus.Mountain.prototype = {
       function: _self.animate,
       scope: _self
     });
+      
+    if(_self.options.save) {
+        var savedComponents = JSON.parse(localStorage.getItem("worldElements"));      
+        savedComponents.push({
+            type: "mountain",
+            //  baseY: _self.tree.position.baseY,
+            options: _self.options
+        });
+        localStorage.setItem("worldElements", JSON.stringify(savedComponents));
+    }
 
     return _self;
   },
