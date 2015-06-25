@@ -1,4 +1,4 @@
-Kokus.Tree = function(rotation, options, kokusObject){
+Kokus.Tree = function(rotation, options, kokusObject, save){
   this.options = {};
 
   rotation = rotation || {};
@@ -19,6 +19,8 @@ Kokus.Tree = function(rotation, options, kokusObject){
   this.options.leafBaseSize = options.leafBaseSize || defaultOption.leafBaseSize;
   this.options.leafBaseHeight = options.leafBaseHeight || defaultOption.leafBaseHeight;
 
+  this.options.save = (save !== undefined) ? save : true;
+    
   this.kokusObject = kokusObject;
 
 
@@ -59,6 +61,16 @@ Kokus.Tree.prototype = {
       function: _self.animate,
       scope: _self
     });
+      
+    if(_self.options.save) {
+        var savedComponents = JSON.parse(localStorage.getItem("worldElements"));      
+        savedComponents.push({
+            type: "tree",
+            //  baseY: _self.tree.position.baseY,
+            options: _self.options
+        });
+        localStorage.setItem("worldElements", JSON.stringify(savedComponents));
+    }
 
     return _self;
   },
