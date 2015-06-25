@@ -114,6 +114,7 @@ Kokus.prototype = {
     _self.animate();
 
     _self.renderer.render( _self.scene, _self.camera );   
+    THREEx.WindowResize(_self.renderer, _self.camera);
   },
   animate: function(){
     var _self = this;
