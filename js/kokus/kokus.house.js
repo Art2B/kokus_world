@@ -37,6 +37,7 @@ Kokus.House.prototype = {
     var roofBaseSize = _self.options.roofBaseSize;
     var houseBaseSize = _self.options.houseBaseSize;
     var chimneyBaseSize = _self.options.chimneyBaseSize;
+    var space = houseBaseSize / 3;
 
     var materialRoof = new THREE.LineBasicMaterial({color: _self.options.color.roof});
     var materialBase = new THREE.LineBasicMaterial({color: _self.options.color.base});
@@ -56,7 +57,7 @@ Kokus.House.prototype = {
 
     _self.house = new THREE.Mesh();
     _self.house.add(cottageRoof).add(cottageBase).add(cottageChimney);
-    _self.house.position.y = _self.kokusObject.world.planet.geometry.parameters.radius;
+    _self.house.position.y = _self.kokusObject.world.planet.geometry.parameters.radius - space;
     _self.house.position.baseY = _self.house.position.y;
 
     _self.pivot = new THREE.Object3D();
