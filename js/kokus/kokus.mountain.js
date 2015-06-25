@@ -23,7 +23,8 @@ Kokus.Mountain = function(rotation, options, kokusObject, save){
   this.kokusObject = kokusObject;
 
   // Need to check collision
-  this.create();
+  // this.create();
+  return this;
 };
 Kokus.Mountain.prototype = {
   kokusObject: {},

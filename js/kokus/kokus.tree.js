@@ -25,7 +25,8 @@ Kokus.Tree = function(rotation, options, kokusObject, save){
 
 
   // need to check collision
-  this.create();
+  // this.create();
+  return this;
 };
 Kokus.Tree.prototype = {
   kokusObject: {},

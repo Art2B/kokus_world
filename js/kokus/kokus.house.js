@@ -18,14 +18,13 @@ Kokus.House = function(rotation, options, kokusObject, save){
   this.options.chimneyBaseSize = this.options.houseBaseSize/4;
   this.options.roofBaseSize = this.options.houseBaseSize/2;
 
-  this.options.save = (save !== undefined) ? save : true;
-
   this.options.elements = options.elements || [];
 
-  this.kokusObject = kokusObject;  
+this.options.save = (save !== undefined) ? save : true;
 
-  // Need to check collision
-  this.create();
+  this.kokusObject = kokusObject;
+
+  return this; 
 };
 Kokus.House.prototype = {
   kokusObject: {},
@@ -37,7 +36,6 @@ Kokus.House.prototype = {
     var roofBaseSize = _self.options.roofBaseSize;
     var houseBaseSize = _self.options.houseBaseSize;
     var chimneyBaseSize = _self.options.chimneyBaseSize;
-    var space = houseBaseSize / 3;
 
     var materialRoof = new THREE.LineBasicMaterial({color: _self.options.color.roof});
     var materialBase = new THREE.LineBasicMaterial({color: _self.options.color.base});
@@ -57,22 +55,14 @@ Kokus.House.prototype = {
 
     _self.house = new THREE.Mesh();
     _self.house.add(cottageRoof).add(cottageBase).add(cottageChimney);
-    _self.house.position.y = _self.kokusObject.world.planet.geometry.parameters.radius - space;
-    _self.house.position.baseY = _self.house.position.y;
+    _self.house.position.y = _self.kokusObject.world.planet.geometry.parameters.radius;
 
     _self.pivot = new THREE.Object3D();
     _self.pivot.add(_self.house);
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
-    _self.house.scale.x = 0;
-    _self.house.scale.y = 0;
-    _self.house.scale.z = 0;
-    _self.kokusObject.animations.push({
-      function: _self.animate,
-      scope: _self
-    });
-      
+
     if(_self.options.save) {
         var savedComponents = JSON.parse(localStorage.getItem("worldElements"));      
         savedComponents.push({
@@ -114,8 +104,6 @@ Kokus.House.prototype = {
       else
         angle.x = 0;
 
-      console.log(angle);
-
       // Calcul de la distance sur le plan XY entre la maison et l'element u du tableau de tout les elements du monde
       distance.xy = Math.sqrt(2 * radius*radius - 2 * radius*radius * Math.cos(angle.z));
       // Calcul de la distance sur le plan YZ entre la maison et l'element u du tableau de tout les elements du monde
@@ -133,7 +121,6 @@ Kokus.House.prototype = {
       else if(typeof elements[i].mountain !== undefined)
         totalElementsWidth = elements[i].mountain.children[1].geometry.parameters.radiusBottom + houseBaseSize;
 
-      console.log(totalElementsWidth);
       if (totalElementsWidth >= distance.hypotenuse)
         return true;
     };
@@ -141,28 +128,6 @@ Kokus.House.prototype = {
     return false;
   },
   animate: function(){
-    var _self = this;
-    var isGrowing;
-
-    if(_self.house.position.y < _self.house.position.yNeeded){
-      if(_self.house.position.yNeeded - _self.house.position.y > 0.1){
-        _self.house.position.y += 0.1;
-      } else {
-        _self.house.position.y += _self.house.position.yNeeded - _self.house.position.y;
-      }
-    }
-
-    if(_self.house.scale.x >= 1){
-      isGrowing = false;
-    }
-    else{
-      isGrowing = true;
-    }
-
-    if(isGrowing){
-      _self.house.scale.x += 0.05;
-      _self.house.scale.y += 0.05;
-      _self.house.scale.z += 0.05;
-    }
+    console.log('animate function');
   }
 };
