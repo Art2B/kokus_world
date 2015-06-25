@@ -2,6 +2,7 @@ Kokus = function(options){
   options = options || {};
   this.options = {};
   this.options.backgroundColor = options.backgroundColor || Config.world.backgroundColor;
+  this.options.container = document.getElementById(options.idContainer) || document.body;
 
   this.init();
   return this;
@@ -43,7 +44,8 @@ Kokus.prototype = {
     _self.renderer.setPixelRatio( window.devicePixelRatio );
     _self.renderer.setSize( window.innerWidth, window.innerHeight );
     _self.renderer.shadowMapEnabled = true;
-    document.body.appendChild( _self.renderer.domElement );
+
+    _self.options.container.appendChild( _self.renderer.domElement );
   },
   initControls: function(){
     var _self = this;
