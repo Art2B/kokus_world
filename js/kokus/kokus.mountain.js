@@ -49,7 +49,7 @@ Kokus.Mountain.prototype = {
 
     _self.mountain = new THREE.Mesh();
     _self.mountain.add(snowTop).add(snowBase);
-    _self.mountain.position.y = _self.kokusObject.world.planet.geometry.parameters.radius;
+    _self.mountain.position.y = _self.kokusObject.world.planet.geometry.parameters.radius + (mountainBaseSize/2);
     _self.mountain.position.baseY = _self.mountain.position.y;
 
     _self.pivot = new THREE.Object3D();
