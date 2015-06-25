@@ -54,6 +54,9 @@ Kokus.Mountain.prototype = {
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
+    _self.mountain.scale.x = 0;
+    _self.mountain.scale.y = 0;
+    _self.mountain.scale.z = 0;
     _self.kokusObject.animations.push({
       function: _self.animate,
       scope: _self
@@ -63,6 +66,7 @@ Kokus.Mountain.prototype = {
   },
   animate: function(){
     var _self = this;
+    var isGrowing;
 
     if(_self.mountain.position.y < _self.mountain.position.yNeeded){
       if(_self.mountain.position.yNeeded - _self.mountain.position.y > 0.1){
@@ -70,6 +74,19 @@ Kokus.Mountain.prototype = {
       } else {
         _self.mountain.position.y += _self.mountain.position.yNeeded - _self.mountain.position.y;
       }
+    }
+    
+    if(_self.mountain.scale.x >= 1){
+      isGrowing = false;
+    }
+    else{
+      isGrowing = true;
+    }
+
+    if(isGrowing){
+      _self.mountain.scale.x += 0.05;
+      _self.mountain.scale.y += 0.05;
+      _self.mountain.scale.z += 0.05;
     }
   },
   collision: function(){
