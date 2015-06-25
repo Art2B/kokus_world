@@ -48,8 +48,9 @@ Kokus.Mountain.prototype = {
     snowBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, (mountainBaseSize*0.3)/2, 0) );
 
     _self.mountain = new THREE.Mesh();
+    _self.mountain.name = "mountain";
     _self.mountain.add(snowTop).add(snowBase);
-    _self.mountain.position.y = _self.kokusObject.world.planet.geometry.parameters.radius + (mountainBaseSize/2);
+    _self.mountain.position.y = _self.kokusObject.world.planet.geometry.parameters.radius + (mountainBaseSize*0.1);
     _self.mountain.position.baseY = _self.mountain.position.y;
 
     _self.pivot = new THREE.Object3D();
@@ -57,9 +58,7 @@ Kokus.Mountain.prototype = {
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
-    _self.mountain.scale.x = 0;
-    _self.mountain.scale.y = 0;
-    _self.mountain.scale.z = 0;
+    _self.mountain.scale.set(0,0,0);
     _self.kokusObject.animations.push({
       function: _self.animate,
       scope: _self
