@@ -20,8 +20,7 @@ Kokus.Mountain = function(rotation, options, kokusObject, save){
     
   this.kokusObject = kokusObject;
 
-  // Need to check collision
-  // this.create();
+  this.create();
   return this;
 };
 Kokus.Mountain.prototype = {
@@ -46,22 +45,23 @@ Kokus.Mountain.prototype = {
     snowBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, (mountainBaseSize*0.3)/2, 0) );
 
     _self.mountain = new THREE.Mesh();
-    _self.mountain.name = "mountain";
     _self.mountain.add(snowTop).add(snowBase);
-    _self.mountain.position.y = _self.kokusObject.world.planet.geometry.parameters.radius + (mountainBaseSize*0.1);
-    _self.mountain.position.baseY = _self.mountain.position.y;
+    _self.mountain.position.y = _self.kokusObject.world.planet.geometry.parameters.radius;
 
     _self.pivot = new THREE.Object3D();
     _self.pivot.add(_self.mountain);
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
-    _self.mountain.scale.set(0,0,0);
+
+    _self.mountain.scale.x = 0;
+    _self.mountain.scale.y = 0;
+    _self.mountain.scale.z = 0;
     _self.kokusObject.animations.push({
       function: _self.animate,
       scope: _self
     });
-      
+
     if(_self.options.save) {
         var savedComponents = JSON.parse(localStorage.getItem("worldElements"));      
         savedComponents.push({
@@ -71,21 +71,11 @@ Kokus.Mountain.prototype = {
         });
         localStorage.setItem("worldElements", JSON.stringify(savedComponents));
     }
-
-    return _self;
   },
   animate: function(){
     var _self = this;
     var isGrowing;
 
-    if(_self.mountain.position.y < _self.mountain.position.yNeeded){
-      if(_self.mountain.position.yNeeded - _self.mountain.position.y > 0.1){
-        _self.mountain.position.y += 0.1;
-      } else {
-        _self.mountain.position.y += _self.mountain.position.yNeeded - _self.mountain.position.y;
-      }
-    }
-    
     if(_self.mountain.scale.x >= 1){
       isGrowing = false;
     }
@@ -98,60 +88,5 @@ Kokus.Mountain.prototype = {
       _self.mountain.scale.y += 0.05;
       _self.mountain.scale.z += 0.05;
     }
-  },
-  collision: function(){
-    var _self = this;
-
-    var mountainBaseSize = _self.options.mountainBaseSize;
-    var rotation = _self.options.rotation;
-    var radius = _self.kokusObject.world.planet.geometry.parameters.radius;
-    var elements = _self.kokusObject.options.elements;
-
-    for (var i = 0; i < elements.length; i++) {
-      var angle = {};
-      var distance = {};
-      var totalElementsWidth;
-
-      // Calcul de l'angle sur l'axe Z entre la maison et l'element i du tableau de tout les elements du monde
-      if(Math.radians(rotation.z) > Math.radians(elements[i].pivot.rotation._z))
-        angle.z = Math.radians(rotation.z) - Math.radians(elements[i].pivot.rotation._z);
-      else if(Math.radians(rotation.z) < Math.radians(elements[i].pivot.rotation._z))
-        angle.z = Math.radians(elements[i].pivot.rotation._z) - Math.radians(rotation.z);
-      else
-        angle.z = 0;
-
-      // Calcul de l'angle sur l'axe X entre la maison et l'element i du tableau de tout les elements du monde
-      if(Math.radians(rotation.x) > Math.radians(elements[i].pivot.rotation._x))
-        angle.x = Math.radians(rotation.x) - Math.radians(elements[i].pivot.rotation._x);
-      else if(Math.radians(rotation.x) < Math.radians(elements[i].pivot.rotation._x))
-        angle.x = Math.radians(elements[i].pivot.rotation._x) - Math.radians(rotation.x);
-      else
-        angle.x = 0;
-
-      console.log(angle);
-
-      // Calcul de la distance sur le plan XY entre la maison et l'element u du tableau de tout les elements du monde
-      distance.xy = Math.sqrt(2 * radius*radius - 2 * radius*radius * Math.cos(angle.z));
-      // Calcul de la distance sur le plan YZ entre la maison et l'element u du tableau de tout les elements du monde
-      distance.yz = Math.sqrt(2 * radius*radius - 2 * radius*radius * Math.cos(angle.x));
-
-      // Calcul de l'hypoténuse du triangle des 2 distances précédentes
-      distance.hypotenuse = Math.sqrt(distance.xy*distance.xy + distance.yz*distance.yz);
-
-      console.log(distance);
-
-      if(elements[i].house !== undefined)
-        totalElementsWidth = elements[i].house.children[1].geometry.parameters.radiusBottom + mountainBaseSize;
-      else if(elements[i].tree !== undefined)
-        totalElementsWidth = elements[i].tree.children[0].geometry.parameters.radiusBottom + mountainBaseSize;
-      else if(elements[i].mountain !== undefined)
-        totalElementsWidth = elements[i].mountain.children[1].geometry.parameters.radiusBottom + mountainBaseSize;
-
-      console.log(totalElementsWidth);
-      if (totalElementsWidth >= distance.hypotenuse)
-        return true;
-    };
-
-    return false;
   }
 };

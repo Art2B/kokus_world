@@ -26,10 +26,6 @@ Kokus.World = function(options, kokusObject){
 Kokus.World.prototype = {
   kokusObject: {},
   planet: {},
-  previousCameraMovePlanetScale: Number(),
-  scaleStep: Number(),
-  scaleWanted: Number(),
-  isGrowing: false,
   generate: function(){
     var _self = this;
 
@@ -42,9 +38,6 @@ Kokus.World.prototype = {
     });
     var geometry = new THREE.SphereGeometry(_self.options.radius, _self.options.segments, _self.options.segments);
     _self.planet = new THREE.Mesh(geometry, material);
-
-    _self.previousCameraMovePlanetScale = _self.planet.scale.x;
-    _self.scaleStep = _self.planet.scale.x*0.4;
 
     _self.changeFaces();
     _self.kokusObject.scene.add(_self.planet);
@@ -66,31 +59,5 @@ Kokus.World.prototype = {
       
       val.color.setRGB(red, green, blue);
     });
-  },
-  grow: function(){
-    var _self = this;
-
-    _self.scaleWanted = _self.planet.scale.x + 0.05;
-    _self.isGrowing = true;
-
-    _self.kokusObject.scene.children.forEach(function(val, index){
-      if(val.type == "Object3D"){
-        console.log(val);
-        val.children[0].position.yNeeded = val.children[0].position.baseY * _self.scaleWanted;
-      }
-    });
-
-  },
-  animate: function(){
-    var _self = this;
-
-    if(_self.isGrowing){
-      _self.planet.scale.x += 0.007;
-      _self.planet.scale.y += 0.007;
-      _self.planet.scale.z += 0.007;
-      if(_self.planet.scale.x >= _self.scaleWanted){
-        _self.isGrowing = false;
-      }
-    }
   }
 };

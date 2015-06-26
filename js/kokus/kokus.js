@@ -4,8 +4,6 @@ Kokus = function(options){
   this.options.backgroundColor = options.backgroundColor || Config.world.backgroundColor;
   this.options.container = document.getElementById(options.idContainer) || document.body;
 
-  this.options.elements = options.elements || [];
-
   this.init();
   return this;
 };
@@ -18,7 +16,6 @@ Kokus.prototype = {
   stats: {},
   world: {},
   animations: [],
-  isCameraMoving: false,
   init: function(){
     var _self = this;
     _self.initScene();
@@ -28,8 +25,8 @@ Kokus.prototype = {
     _self.initStats();
 
     _self.render();
-   _self.initWorld();
-   _self.initSavedWorld();
+    _self.initWorld();
+    _self.initSavedWorld();
   },
   initScene: function(){
     var _self = this;
@@ -58,7 +55,7 @@ Kokus.prototype = {
   },
   initLight: function(){
     var _self = this;
-    var light = new THREE.PointLight("#ffffff", 0.5);
+    var light = new THREE.SpotLight("#ffffff", 0.5);
     light.position.set(100, 100, 0);
     _self.scene.add(light);
 
@@ -77,9 +74,6 @@ Kokus.prototype = {
     var _self = this;
     _self.initLight();
     _self.camera.position.z = 50;
-    _self.camera.previousPosition = _self.camera.position.z;
-    _self.camera.stepValue = _self.camera.position.z*0.4;
-
     _self.world = new Kokus.World({},_self);
       
     if(localStorage.getItem("worldElements") == null) {
@@ -89,29 +83,29 @@ Kokus.prototype = {
   initSavedWorld: function(){
     var _self = this;
     var savedElements = JSON.parse(localStorage.getItem("worldElements"));
-    console.log(savedElements);
+ 
+    if(savedElements.length > 0) {
+        console.log('Saved elements on world !');
+    } else {
+        console.log('Empty world !');
+    }
     
-    var i = 0;
     savedElements.forEach(function(elem){
         switch(elem.type) {
             case "tree":
-                _self.options.elements.push(new Kokus.Tree(elem.options.rotation, elem.options, _self, false).create());
+                new Kokus.Tree(elem.options.rotation, elem.options, _self, false);
                 break;
             case "mountain":
                 setTimeout(function(){
-                    _self.options.elements.push(new Kokus.Mountain(elem.options.rotation, elem.options, _self, false).create());
+                    new Kokus.Mountain(elem.options.rotation, elem.options, _self, false);
                 }, 400);
                 break;
             case "house":
                 setTimeout(function(){
-                    _self.options.elements.push(new Kokus.House(elem.options.rotation, elem.options, _self, false).create());
+                    new Kokus.House(elem.options.rotation, elem.options, _self, false);
                 }, 800);
                 break;
         }
-    i++;
-
-    if(i % 10)
-        _self.dailyEvents();
     });      
   },
   render: function(){
@@ -124,20 +118,13 @@ Kokus.prototype = {
 
     _self.animate();
 
-    _self.renderer.render( _self.scene, _self.camera );   
+    _self.renderer.render( _self.scene, _self.camera );  
     THREEx.WindowResize(_self.renderer, _self.camera);
   },
   animate: function(){
     var _self = this;
     _self.scene.rotation.y += 0.01;
 
-    if(_self.isCameraMoving){
-      _self.camera.position.z += 1;
-      if(_self.camera.position.z >= _self.camera.previousPosition + _self.camera.stepValue){
-        _self.isCameraMoving = false;
-      }
-    }
-      
     if (_self.scene.position.y >5){
       _self.scene.pos = false;
     }
@@ -151,26 +138,13 @@ Kokus.prototype = {
       _self.scene.position.y -= 0.03;
       _self.scene.position.x -= 0.01;
     }
-
-  },
-  dailyEvents: function(){
-    var _self = this;
-    _self.world.grow();
-
-
-    if(_self.world.scaleStep <= _self.world.planet.scale.x-_self.world.previousCameraMovePlanetScale){
-      _self.world.previousCameraMovePlanetScale = _self.world.planet.scale.x;
-      _self.camera.previousPosition = _self.camera.position.z;
-      _self.isCameraMoving = true;
-    }
   },
   reset: function(){
     var _self = this;
-    _self.scene.children.forEach(function(object){
-        _self.scene.remove(object);
+    _.each(_.rest(_self.scene.children, 1), function( object ) {
+      _self.scene.remove(object);
     });
     localStorage.setItem("worldElements", JSON.stringify([]));
-    _self.options.elements = [];   
-    _self.initWorld();
+    _self.initWorld();    
   }
 };
