@@ -11,8 +11,6 @@ Kokus.Mountain = function(rotation, options, kokusObject, save){
   options = options || {color:{}};
   options.color = options.color || {};
 
-  this.options.elements = options.elements || [];
-
   this.options.color = {};
   this.options.color.snow = options.color.snow || defaultOption.color.snow;
   this.options.color.base = options.color.base || defaultOption.color.base;
@@ -108,7 +106,7 @@ Kokus.Mountain.prototype = {
     var mountainBaseSize = _self.options.mountainBaseSize;
     var rotation = _self.options.rotation;
     var radius = _self.kokusObject.world.planet.geometry.parameters.radius;
-    var elements = _self.options.elements;
+    var elements = _self.kokusObject.options.elements;
 
     for (var i = 0; i < elements.length; i++) {
       var angle = {};

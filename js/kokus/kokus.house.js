@@ -18,8 +18,6 @@ Kokus.House = function(rotation, options, kokusObject, save){
   this.options.chimneyBaseSize = this.options.houseBaseSize/4;
   this.options.roofBaseSize = this.options.houseBaseSize/2;
 
-  this.options.elements = options.elements || [];
-
 this.options.save = (save !== undefined) ? save : true;
 
   this.kokusObject = kokusObject;
@@ -81,7 +79,7 @@ Kokus.House.prototype = {
     var houseBaseSize = _self.options.houseBaseSize;
     var rotation = _self.options.rotation;
     var radius = _self.kokusObject.world.planet.geometry.parameters.radius;
-    var elements = _self.options.elements;
+    var elements = _self.kokusObject.options.elements;
 
     for (var i = 0; i < elements.length; i++) {
       var angle = {};
@@ -114,11 +112,11 @@ Kokus.House.prototype = {
 
       console.log(distance);
 
-      if(typeof elements[i].house !== undefined)
+      if(elements[i].house !== undefined)
         totalElementsWidth = elements[i].house.children[1].geometry.parameters.radiusBottom + houseBaseSize;
-      else if(typeof elements[i].tree !== undefined)
+      else if(elements[i].tree !== undefined)
         totalElementsWidth = elements[i].tree.children[0].geometry.parameters.radiusBottom + houseBaseSize;
-      else if(typeof elements[i].mountain !== undefined)
+      else if(elements[i].mountain !== undefined)
         totalElementsWidth = elements[i].mountain.children[1].geometry.parameters.radiusBottom + houseBaseSize;
 
       if (totalElementsWidth >= distance.hypotenuse)

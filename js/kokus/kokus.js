@@ -4,6 +4,8 @@ Kokus = function(options){
   this.options.backgroundColor = options.backgroundColor || Config.world.backgroundColor;
   this.options.container = document.getElementById(options.idContainer) || document.body;
 
+  this.options.elements = options.elements || [];
+
   this.init();
   return this;
 };
@@ -93,16 +95,16 @@ Kokus.prototype = {
     savedElements.forEach(function(elem){
         switch(elem.type) {
             case "tree":
-                new Kokus.Tree(elem.options.rotation, elem.options, _self, false).create();
+                _self.options.elements.push(new Kokus.Tree(elem.options.rotation, elem.options, _self, false).create());
                 break;
             case "mountain":
                 setTimeout(function(){
-                    new Kokus.Mountain(elem.options.rotation, elem.options, _self, false).create();
+                    _self.options.elements.push(new Kokus.Mountain(elem.options.rotation, elem.options, _self, false).create());
                 }, 400);
                 break;
             case "house":
                 setTimeout(function(){
-                    new Kokus.House(elem.options.rotation, elem.options, _self, false).create();
+                    _self.options.elements.push(new Kokus.House(elem.options.rotation, elem.options, _self, false).create());
                 }, 800);
                 break;
         }
@@ -164,10 +166,11 @@ Kokus.prototype = {
   },
   reset: function(){
     var _self = this;
-    _.each(_.rest(_self.scene.children, 0), function( object ) {
-      _self.scene.remove(object);
+    _self.scene.children.forEach(function(object){
+        _self.scene.remove(object);
     });
-    localStorage.setItem("worldElements", JSON.stringify([]));      
+    localStorage.setItem("worldElements", JSON.stringify([]));
+    _self.options.elements = [];   
     _self.initWorld();
   }
 };

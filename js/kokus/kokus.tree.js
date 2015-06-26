@@ -11,8 +11,6 @@ Kokus.Tree = function(rotation, options, kokusObject, save){
   options = options || {color:{}};
   options.color = options.color || {};
 
-  this.options.elements = options.elements || [];
-
   this.options.color = {};
   this.options.color.leaf = options.color.leaf || defaultOption.color.leaf;
   this.options.color.base = options.color.base || defaultOption.color.base;
@@ -65,12 +63,14 @@ Kokus.Tree.prototype = {
     });
       
     if(_self.options.save) {
+      var options = _self.options;
         var savedComponents = JSON.parse(localStorage.getItem("worldElements"));      
         savedComponents.push({
             type: "tree",
             //  baseY: _self.tree.position.baseY,
-            options: _self.options
+            options: options
         });
+        console.log(savedComponents);
         localStorage.setItem("worldElements", JSON.stringify(savedComponents));
     }
 
@@ -107,7 +107,7 @@ Kokus.Tree.prototype = {
     var treeBaseSize = _self.options.leafBaseSize;
     var rotation = _self.options.rotation;
     var radius = _self.kokusObject.world.planet.geometry.parameters.radius;
-    var elements = _self.options.elements;
+    var elements = _self.kokusObject.options.elements;
 
     for (var i = 0; i < elements.length; i++) {
       var angle = {};
@@ -142,11 +142,11 @@ Kokus.Tree.prototype = {
 
       console.log(distance);
 
-      if(typeof elements[i].house !== undefined)
+      if(elements[i].house  !== undefined)
         totalElementsWidth = elements[i].house.children[1].geometry.parameters.radiusBottom + treeBaseSize;
-      else if(typeof elements[i].tree !== undefined)
+      else if(elements[i].tree  !== undefined)
         totalElementsWidth = elements[i].tree.children[0].geometry.parameters.radiusBottom + treeBaseSize;
-      else if(typeof elements[i].mountain !== undefined)
+      else if(elements[i].mountain  !== undefined)
         totalElementsWidth = elements[i].mountain.children[1].geometry.parameters.radiusBottom + treeBaseSize;
 
       console.log(totalElementsWidth);
