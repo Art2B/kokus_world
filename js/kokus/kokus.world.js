@@ -75,6 +75,7 @@ Kokus.World.prototype = {
 
     _self.kokusObject.scene.children.forEach(function(val, index){
       if(val.type == "Object3D"){
+        console.log(val);
         val.children[0].position.yNeeded = val.children[0].position.baseY * _self.scaleWanted;
       }
     });

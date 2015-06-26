@@ -45,6 +45,7 @@ Kokus.Tree.prototype = {
     pineBase.applyMatrix( new THREE.Matrix4().makeTranslation(0, (_self.options.leafBaseHeight*0.0025), 0) );
 
     _self.tree = new THREE.Mesh();
+    _self.tree.name = "tree";
     _self.tree.add(pineLeaf).add(pineBase);
     _self.tree.position.y = _self.kokusObject.world.planet.geometry.parameters.radius - space;
     _self.tree.position.baseY = _self.tree.position.y;
@@ -54,9 +55,7 @@ Kokus.Tree.prototype = {
     _self.pivot.rotation.set(Math.radians(_self.options.rotation.x), Math.radians(_self.options.rotation.y), Math.radians(_self.options.rotation.z));
 
     _self.kokusObject.scene.add(_self.pivot);
-    _self.tree.scale.x = 0;
-    _self.tree.scale.y = 0;
-    _self.tree.scale.z = 0;
+    _self.tree.scale.set(0,0,0);
     _self.kokusObject.animations.push({
       function: _self.animate,
       scope: _self
